@@ -502,7 +502,10 @@ export default function App() {
                                 "h-full flex flex-col gap-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-300",
                                 isCompleted && "border-primary bg-primary/5"
                               )}
-                              onClick={() => setSelectedModule(module)}
+                              onClick={() => {
+                                setSelectedModule(module);
+                                setView('module');
+                              }}
                             >
                               <div className="flex items-start justify-between gap-4">
                                 <div className="p-3 bg-secondary rounded-2xl text-primary">
