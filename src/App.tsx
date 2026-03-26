@@ -94,11 +94,17 @@ const Button = ({
   );
 };
 
-const Card = ({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) => (
-  <div onClick={onClick} className={cn('bg-white rounded-[32px] p-8 shadow-sm border border-earth-200', className)}>
-    {children}
-  </div>
-);
+const Card = ({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) => {
+  const Component = onClick ? 'button' : 'div';
+  return (
+    <Component 
+      onClick={onClick} 
+      className={cn('bg-white rounded-[32px] p-8 shadow-sm border border-earth-200 text-left w-full', className)}
+    >
+      {children}
+    </Component>
+  );
+};
 
 // --- Main App ---
 
@@ -406,6 +412,9 @@ export default function App() {
         </div>
         
         <div className="flex items-center gap-4">
+          {!user && (
+            <Button onClick={signIn} variant="outline" className="text-sm py-2">Test Sign In</Button>
+          )}
           <button 
             onClick={() => setView('profile')}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-earth-200 hover:bg-earth-50 transition-colors"
