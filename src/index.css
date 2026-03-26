@@ -6,22 +6,57 @@
   --font-display: "Libre Baskerville", serif;
   --font-sans: "Inter", sans-serif;
   
-  --color-earth-50: #fdfcfb;
-  --color-earth-100: #f5f2ed;
-  --color-earth-200: #e8e2d6;
-  --color-earth-300: #d1c5b4;
-  --color-earth-400: #b5a18d;
-  --color-earth-500: #9a836e;
-  --color-earth-600: #7c6756;
-  --color-earth-700: #5e4e42;
-  --color-earth-800: #42372f;
-  --color-earth-900: #2a231e;
-  
-  --color-nature-500: #5A5A40;
+  --color-background: #121212;
+  --color-foreground: #dcdcdc;
+  --color-card: #1e1e1e;
+  --color-card-foreground: #dcdcdc;
+  --color-popover: #1e1e1e;
+  --color-popover-foreground: #dcdcdc;
+  --color-primary: #e0e0e0;
+  --color-primary-foreground: #121212;
+  --color-secondary: #333333;
+  --color-secondary-foreground: #dcdcdc;
+  --color-muted: #333333;
+  --color-muted-foreground: #a3a3a3;
+  --color-accent: #333333;
+  --color-accent-foreground: #dcdcdc;
+  --color-destructive: #7f1d1d;
+  --color-destructive-foreground: #dcdcdc;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-input: rgba(255, 255, 255, 0.08);
+  --color-ring: rgba(255, 255, 255, 0.2);
+  --radius: 100px; /* Pill-shaped */
 }
 
-body {
-  @apply bg-earth-100 text-earth-900 font-sans antialiased;
+@layer base {
+  :root {
+    --background: #121212;
+    --foreground: #dcdcdc;
+    --card: #1e1e1e;
+    --card-foreground: #dcdcdc;
+    --popover: #1e1e1e;
+    --popover-foreground: #dcdcdc;
+    --primary: #e0e0e0;
+    --primary-foreground: #121212;
+    --secondary: #333333;
+    --secondary-foreground: #dcdcdc;
+    --muted: #333333;
+    --muted-foreground: #a3a3a3;
+    --accent: #333333;
+    --accent-foreground: #dcdcdc;
+    --destructive: #7f1d1d;
+    --destructive-foreground: #dcdcdc;
+    --border: rgba(255, 255, 255, 0.08);
+    --input: rgba(255, 255, 255, 0.08);
+    --ring: rgba(255, 255, 255, 0.2);
+    --radius: 100px;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
 }
 
 .serif {
@@ -32,11 +67,11 @@ body {
   @apply font-display;
 }
 
-.markdown-body h1 { @apply text-3xl font-display mb-4; }
-.markdown-body h2 { @apply text-2xl font-display mb-3 mt-6; }
-.markdown-body h3 { @apply text-xl font-display mb-2 mt-4; }
-.markdown-body p { @apply mb-4 leading-relaxed text-lg; }
+.markdown-body h1 { @apply text-4xl font-display mb-4 font-light; }
+.markdown-body h2 { @apply text-3xl font-display mb-3 mt-6 font-light; }
+.markdown-body h3 { @apply text-2xl font-display mb-2 mt-4 font-light; }
+.markdown-body p { @apply mb-4 leading-relaxed text-lg font-light; }
 .markdown-body ul { @apply list-disc pl-6 mb-4; }
 .markdown-body li { @apply mb-2; }
-.markdown-body strong { @apply font-bold text-nature-500; }
+.markdown-body strong { @apply font-bold text-white; }
 

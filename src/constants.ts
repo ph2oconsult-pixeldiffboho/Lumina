@@ -44,6 +44,26 @@ When Luna feels angry, she says, "Oh, look! A thunderstorm is passing through." 
     activity: `### Emotion Weather Map
 Draw a big sun, a rain cloud, and a lightning bolt. Ask your child to point to which one they feel like today. Draw a new one together for 'Calm' or 'Excited'.`
   },
+  {
+    id: 'kindness-ripple',
+    title: 'The Kindness Ripple',
+    description: 'Discovering how small acts of kindness create big waves of change.',
+    category: 'Empathy',
+    track: 'foundations',
+    keyConcept: 'Kindness',
+    artifactIcon: 'Flame',
+    content: `In the middle of a bustling pond, a little frog named Barnaby dropped a pebble. *Plop.* The ripples started small, but they grew wider and wider, touching the edges of the pond.
+
+"Kindness is just like that pebble," Barnaby thought. "Even a tiny act, like sharing a snack or giving a compliment, can create ripples that touch someone far away."
+
+Barnaby decided to start a ripple. He helped a turtle find his way home, and he watched as the turtle felt happy, then helped a fish, and the fish helped a bird.`,
+    parentGuide: `### Discussion Points
+1. "What is a small act of kindness you could do today?"
+2. "How do you feel when someone is kind to you?"
+3. "How can we start a 'kindness ripple' in our family?"`,
+    activity: `### The Kindness Chain
+Use strips of construction paper to create a paper chain. Every time your child does something kind, write it on a strip and add it to the chain. See how long the chain can grow!`
+  },
 
   // --- Expeditions Track (Ages 11-16) ---
   {
@@ -87,5 +107,25 @@ You don't need to build a mansion overnight. You just need to make sure today's 
 3. "How can we make it easier to make good choices when you're tired or stressed?"`,
     activity: `### The Habit Audit
 Identify one "keystone habit" you want to build this week (e.g., reading 10 pages, sleeping by 10 PM). Track it for 7 days. Notice how this one choice affects your mood and other decisions.`
+  },
+  {
+    id: 'art-of-saying-no',
+    title: 'The Art of Saying No',
+    description: 'Learning to set healthy boundaries to protect your energy and time.',
+    category: 'Boundaries',
+    track: 'expeditions',
+    keyConcept: 'Self-Respect',
+    artifactIcon: 'Shield',
+    content: `Saying "yes" feels good in the moment. It makes people happy, it makes you feel included, and it avoids conflict. But every "yes" to someone else is often a "no" to yourself.
+
+If you say "yes" to every party, every favor, and every request, you eventually run out of energy for the things that actually matter to you.
+
+Setting boundaries isn't about being mean or selfish. It's about being clear about what you can and cannot do. It’s a way of showing respect for your own time and well-being.`,
+    parentGuide: `### Discussion Points
+1. "Is there something you've said 'yes' to recently that you actually wanted to say 'no' to?"
+2. "Why is it sometimes hard to say no?"
+3. "How can you say no politely but firmly?"`,
+    activity: `### The Boundary Script
+Practice saying "no" in different scenarios. Write down three ways to decline an invitation or request without being rude (e.g., "I'd love to, but I'm fully booked this week," or "I can't commit to that right now.")`
   }
 ];

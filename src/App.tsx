@@ -61,7 +61,8 @@ const Button = ({
   variant = 'primary', 
   className,
   type = 'button',
-  disabled
+  disabled,
+  size = 'md'
 }: { 
   children: React.ReactNode; 
   onClick?: () => void; 
@@ -69,12 +70,19 @@ const Button = ({
   className?: string;
   type?: 'button' | 'submit';
   disabled?: boolean;
+  size?: 'sm' | 'md' | 'lg';
 }) => {
   const variants = {
-    primary: 'bg-nature-500 text-white hover:bg-nature-600',
-    secondary: 'bg-earth-300 text-earth-900 hover:bg-earth-400',
-    outline: 'border-2 border-nature-500 text-nature-500 hover:bg-nature-50',
-    ghost: 'text-earth-600 hover:text-earth-900 hover:bg-earth-200'
+    primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+    secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+    outline: 'border-2 border-primary text-primary hover:bg-primary/10',
+    ghost: 'text-muted-foreground hover:text-foreground hover:bg-accent'
+  };
+
+  const sizes = {
+    sm: 'px-4 py-2 text-xs',
+    md: 'px-6 py-3 text-sm',
+    lg: 'px-8 py-4 text-lg'
   };
 
   return (
@@ -83,8 +91,9 @@ const Button = ({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'px-6 py-3 rounded-full font-medium transition-all active:scale-95 flex items-center justify-center gap-2',
+        'rounded-full font-medium transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm',
         variants[variant],
+        sizes[size],
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
@@ -99,7 +108,7 @@ const Card = ({ children, className, onClick }: { children: React.ReactNode; cla
   return (
     <Component 
       onClick={onClick} 
-      className={cn('bg-white rounded-[32px] p-8 shadow-sm border border-earth-200 text-left w-full', className)}
+      className={cn('bg-card rounded-3xl p-8 border border-white/10 text-left w-full transition-all duration-300', className)}
     >
       {children}
     </Component>
@@ -113,7 +122,7 @@ export default function App() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedModule, setSelectedModule] = useState<Module | null>(null);
-  const [view, setView] = useState<'map' | 'module' | 'profile' | 'situation-room' | 'analytics'>('map');
+  const [view, setView] = useState<'library' | 'module' | 'profile' | 'situation-room' | 'analytics'>('library');
   const [userProgress, setUserProgress] = useState<Record<string, Progress>>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [situationTopic, setSituationTopic] = useState('');
@@ -260,7 +269,7 @@ export default function App() {
     
     setShowReflectionModal(false);
     setReflectionText('');
-    setView('map');
+    setView('library');
   };
 
   const handlePlayAudio = async (text: string) => {
@@ -357,12 +366,12 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-earth-100">
+      <div className="h-screen flex items-center justify-center bg-background">
         <motion.div 
           animate={{ rotate: 360 }}
           transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
         >
-          <Compass className="w-12 h-12 text-nature-500" />
+          <Compass className="w-12 h-12 text-primary" />
         </motion.div>
       </div>
     );
@@ -370,20 +379,20 @@ export default function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-earth-100">
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-md w-full text-center space-y-8"
         >
           <div className="space-y-4">
-            <div className="inline-flex p-4 bg-white rounded-full shadow-sm mb-4">
-              <Sparkles className="w-12 h-12 text-nature-500" />
+            <div className="inline-flex p-4 bg-card rounded-full shadow-sm mb-4 border border-border">
+              <Sparkles className="w-12 h-12 text-primary" />
             </div>
-            <h1 className="text-5xl font-display text-earth-900 leading-tight">
+            <h1 className="text-5xl font-display text-foreground leading-tight">
               Lumina
             </h1>
-            <p className="text-earth-600 text-lg serif">
+            <p className="text-muted-foreground text-lg serif">
               Clarity for the Journey. Foundations for ages 5-10, Expeditions for 11-16.
             </p>
           </div>
@@ -392,7 +401,7 @@ export default function App() {
             Start the Adventure
           </Button>
           
-          <p className="text-xs text-earth-500 uppercase tracking-widest">
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">
             Parental Guidance Recommended
           </p>
         </motion.div>
@@ -401,28 +410,43 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-earth-100 pb-24">
+    <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <header className="p-6 flex items-center justify-between sticky top-0 bg-earth-100/80 backdrop-blur-md z-50">
+      <header className="p-6 flex items-center justify-between sticky top-0 bg-background/50 backdrop-blur-xl z-50 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-nature-500 rounded-full flex items-center justify-center text-white">
+          <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-primary-foreground">
             <Sparkles className="w-6 h-6" />
           </div>
           <h1 className="text-xl font-display hidden sm:block">Lumina</h1>
         </div>
         
+        <nav className="flex items-center gap-2">
+          <Button size="sm" variant="ghost" onClick={() => setView('library')} className={cn(view === 'library' && 'bg-accent')}>
+            <MapIcon className="w-4 h-4" />
+            <span className="hidden sm:inline">Library</span>
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setView('situation-room')} className={cn(view === 'situation-room' && 'bg-accent')}>
+            <Flame className="w-4 h-4" />
+            <span className="hidden sm:inline">Situation Room</span>
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setView('analytics')} className={cn(view === 'analytics' && 'bg-accent')}>
+            <BarChart2 className="w-4 h-4" />
+            <span className="hidden sm:inline">Growth</span>
+          </Button>
+        </nav>
+
         <div className="flex items-center gap-4">
           {!user && (
-            <Button onClick={signIn} variant="outline" className="text-sm py-2">Test Sign In</Button>
+            <Button size="sm" onClick={signIn} variant="outline">Test Sign In</Button>
           )}
           <button 
             onClick={() => setView('profile')}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-earth-200 hover:bg-earth-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border hover:bg-accent transition-colors"
           >
-            <UserIcon className="w-4 h-4 text-nature-500" />
+            <UserIcon className="w-4 h-4 text-primary" />
             <span className="text-sm font-medium">{profile?.childName || 'Setup Profile'}</span>
           </button>
-          <button onClick={logOut} className="p-2 text-earth-400 hover:text-earth-600">
+          <button onClick={logOut} className="p-2 text-muted-foreground hover:text-foreground">
             <LogOut className="w-5 h-5" />
           </button>
         </div>
@@ -430,101 +454,81 @@ export default function App() {
 
       <main className="max-w-4xl mx-auto px-6 pt-8">
         <AnimatePresence mode="wait">
-          {view === 'map' && (
+          {view === 'library' && (
             <motion.div
-              key="map"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
+              key="library"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               className="space-y-12"
             >
               <div className="space-y-2">
-                <h2 className="text-4xl font-display">
-                  {profile?.currentTrack === 'expeditions' ? 'Expeditions' : 'Foundations'}
+                <h2 className="text-4xl font-display text-foreground">
+                  Your Learning Library
                 </h2>
-                <p className="text-earth-600 serif text-lg italic">
-                  {profile?.currentTrack === 'expeditions' 
-                    ? 'Navigating identity, choices, and the future.' 
-                    : 'Building the core skills of emotional intelligence.'}
+                <p className="text-muted-foreground serif text-lg italic">
+                  Explore modules to build core skills and navigate new challenges.
                 </p>
               </div>
 
-              <div className="relative py-12 flex flex-col items-center">
-                {/* The Trail Line */}
-                <div className="absolute top-0 bottom-0 w-1 bg-earth-300 left-1/2 -translate-x-1/2 z-0" />
+              {/* Getting Started Card */}
+              <Card className="bg-primary/5 border-primary/20">
+                <h3 className="text-xl font-display text-foreground mb-2">How to use Lumina</h3>
+                <p className="text-muted-foreground text-sm">
+                  1. Browse the library for a topic that resonates with you or your child.<br/>
+                  2. Read the story together and try the suggested activity.<br/>
+                  3. Reflect on the experience to track growth over time.
+                </p>
+              </Card>
 
-                {INITIAL_MODULES.filter(m => m.track === (profile?.currentTrack || 'foundations')).map((module, index, arr) => {
-                  const isCompleted = profile?.completedModules.includes(module.id);
-                  const isNext = !isCompleted && (index === 0 || profile?.completedModules.includes(arr[index - 1].id));
-                  const isLocked = !isCompleted && !isNext;
-                  const ArtifactIcon = IconMap[module.artifactIcon || 'Star'] || Star;
-                  
-                  // Alternate sides for the trail
-                  const isLeft = index % 2 === 0;
+              <div className="space-y-8">
+                {['foundations', 'expeditions'].map(track => (
+                  <div key={track} className="space-y-4">
+                    <h3 className="text-2xl font-display text-foreground capitalize">{track}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {INITIAL_MODULES.filter(m => m.track === track).map((module, index) => {
+                        const isCompleted = profile?.completedModules.includes(module.id);
+                        const ArtifactIcon = IconMap[module.artifactIcon || 'Star'] || Star;
 
-                  return (
-                    <motion.div 
-                      key={module.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className={cn(
-                        "relative z-10 w-full max-w-2xl flex items-center mb-16",
-                        isLeft ? "justify-start" : "justify-end"
-                      )}
-                    >
-                      {/* Trail Node */}
-                      <div className="absolute left-1/2 -translate-x-1/2 w-12 h-12 rounded-full border-4 border-earth-100 flex items-center justify-center z-20 bg-white shadow-md">
-                        {isCompleted ? (
-                          <div className="w-full h-full rounded-full bg-nature-500 flex items-center justify-center text-white">
-                            <ArtifactIcon className="w-5 h-5" />
-                          </div>
-                        ) : isNext ? (
-                          <div className="w-full h-full rounded-full bg-earth-200 border-2 border-nature-500 flex items-center justify-center text-nature-600 animate-pulse">
-                            <div className="w-3 h-3 bg-nature-500 rounded-full" />
-                          </div>
-                        ) : (
-                          <div className="w-full h-full rounded-full bg-earth-200 flex items-center justify-center text-earth-400">
-                            <Lock className="w-4 h-4" />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Module Card */}
-                      <div className={cn(
-                        "w-[calc(50%-3rem)]",
-                        isLeft ? "pr-8 text-right" : "pl-8 text-left"
-                      )}>
-                        <Card 
-                          className={cn(
-                            "p-6 transition-all duration-300",
-                            isLocked ? "opacity-60 grayscale cursor-not-allowed" : "cursor-pointer hover:shadow-xl hover:-translate-y-1 hover:border-nature-300",
-                            isCompleted && "border-nature-200 bg-nature-50/50"
-                          )}
-                          onClick={() => !isLocked && setSelectedModule(module)}
-                        >
-                          <div className={cn(
-                            "flex flex-col gap-2",
-                            isLeft ? "items-end" : "items-start"
-                          )}>
-                            <span className="text-xs font-bold uppercase tracking-widest text-nature-600 bg-nature-100 px-2 py-1 rounded">
-                              {module.category}
-                            </span>
-                            <h3 className="text-xl font-display text-earth-900">{module.title}</h3>
-                            <p className="text-earth-600 text-sm line-clamp-2">{module.description}</p>
-                            
-                            {isCompleted && (
-                              <div className="mt-2 flex items-center gap-1 text-nature-600 text-xs font-bold uppercase tracking-wider">
-                                <CheckCircle2 className="w-4 h-4" />
-                                Artifact Secured
+                        return (
+                          <motion.div 
+                            key={module.id}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: index * 0.05 }}
+                          >
+                            <Card 
+                              className={cn(
+                                "h-full flex flex-col gap-4 hover:shadow-xl hover:-translate-y-1 transition-all duration-300",
+                                isCompleted && "border-primary bg-primary/5"
+                              )}
+                              onClick={() => setSelectedModule(module)}
+                            >
+                              <div className="flex items-start justify-between gap-4">
+                                <div className="p-3 bg-secondary rounded-2xl text-primary">
+                                  <ArtifactIcon className="w-6 h-6" />
+                                </div>
+                                {isCompleted && (
+                                  <div className="flex items-center gap-1 text-primary text-xs font-bold uppercase tracking-wider bg-primary/10 px-2 py-1 rounded-full">
+                                    <CheckCircle2 className="w-3 h-3" />
+                                    Secured
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                        </Card>
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                              <div className="space-y-1">
+                                <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                                  {module.category}
+                                </span>
+                                <h3 className="text-xl font-display text-foreground">{module.title}</h3>
+                                <p className="text-muted-foreground text-sm line-clamp-2">{module.description}</p>
+                              </div>
+                            </Card>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
               </div>
             </motion.div>
           )}
@@ -538,7 +542,7 @@ export default function App() {
               className="space-y-8"
             >
               <button 
-                onClick={() => setView('map')}
+                onClick={() => setView('library')}
                 className="flex items-center gap-2 text-earth-500 hover:text-earth-900 transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -547,21 +551,21 @@ export default function App() {
 
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <span className="px-3 py-1 bg-nature-100 text-nature-700 rounded-full text-xs font-bold uppercase tracking-widest">
+                  <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-widest">
                     {selectedModule.category}
                   </span>
-                  <span className="text-earth-400">•</span>
-                  <span className="text-earth-500 serif italic">{selectedModule.keyConcept}</span>
+                  <span className="text-muted-foreground">•</span>
+                  <span className="text-muted-foreground serif italic">{selectedModule.keyConcept}</span>
                 </div>
-                <h2 className="text-5xl font-display leading-tight">{selectedModule.title}</h2>
+                <h2 className="text-5xl font-display leading-tight text-foreground">{selectedModule.title}</h2>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
                   {/* Story Section */}
-                  <Card className="prose prose-earth max-w-none">
+                  <Card className="prose prose-stone max-w-none">
                     <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-2 text-nature-500">
+                      <div className="flex items-center gap-2 text-primary">
                         <BookOpen className="w-5 h-5" />
                         <span className="font-bold uppercase tracking-widest text-sm">The Story</span>
                       </div>
@@ -570,7 +574,7 @@ export default function App() {
                       <button 
                         onClick={() => handlePlayAudio(selectedModule.content)}
                         disabled={isGeneratingAudio}
-                        className="flex items-center gap-2 px-4 py-2 bg-earth-100 hover:bg-earth-200 text-earth-700 rounded-full text-sm font-medium transition-colors"
+                        className="flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded-full text-sm font-medium transition-colors"
                       >
                         {isGeneratingAudio ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -588,10 +592,10 @@ export default function App() {
                   </Card>
 
                   {/* Activity Section */}
-                  <Card className="bg-nature-500 text-white border-none">
+                  <Card className="bg-primary text-primary-foreground border-none">
                     <div className="flex items-center gap-2 mb-6 opacity-80">
                       <Star className="w-5 h-5" />
-                      <span className="font-bold uppercase tracking-widest text-sm text-white">Let's Do It!</span>
+                      <span className="font-bold uppercase tracking-widest text-sm text-primary-foreground">Let's Do It!</span>
                     </div>
                     <div className="markdown-body prose-invert">
                       <Markdown>{selectedModule.activity}</Markdown>
@@ -601,16 +605,16 @@ export default function App() {
 
                 <div className="space-y-8">
                   {/* Parent Guide */}
-                  <Card className="bg-earth-200 border-none sticky top-24">
-                    <div className="flex items-center gap-2 mb-6 text-earth-700">
+                  <Card className="bg-secondary border-none sticky top-24">
+                    <div className="flex items-center gap-2 mb-6 text-secondary-foreground">
                       <Heart className="w-5 h-5" />
                       <span className="font-bold uppercase tracking-widest text-sm">Parent's Guide</span>
                     </div>
-                    <div className="markdown-body text-earth-800 text-sm">
+                    <div className="markdown-body text-secondary-foreground text-sm">
                       <Markdown>{selectedModule.parentGuide}</Markdown>
                     </div>
                     
-                    <div className="mt-8 pt-8 border-t border-earth-300">
+                    <div className="mt-8 pt-8 border-t border-border">
                       <Button 
                         onClick={() => setShowReflectionModal(true)}
                         className="w-full"
@@ -670,31 +674,31 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="max-w-2xl mx-auto"
             >
-              <Card className="bg-earth-900 text-earth-50 border-none shadow-xl relative overflow-hidden">
+              <Card className="bg-card border-none shadow-xl relative overflow-hidden">
                 {/* Decorative background element */}
-                <div className="absolute -top-24 -right-24 w-64 h-64 bg-nature-500 rounded-full blur-3xl opacity-20 pointer-events-none" />
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary rounded-full blur-3xl opacity-10 pointer-events-none" />
                 
                 <div className="relative z-10 space-y-8">
                   <div className="space-y-4">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-nature-500/20 text-nature-300 rounded-full text-xs font-bold uppercase tracking-widest border border-nature-500/30">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-widest border border-primary/20">
                       <Sparkles className="w-3 h-3" />
                       Premium Feature
                     </div>
-                    <h2 className="text-4xl font-display text-white">The Situation Room</h2>
-                    <p className="text-earth-300 serif text-lg italic">
+                    <h2 className="text-4xl font-display text-foreground">The Situation Room</h2>
+                    <p className="text-muted-foreground serif text-lg italic">
                       Facing a specific challenge? Tell us what's happening, and our AI will instantly generate a custom, age-appropriate lesson and discussion guide just for your child.
                     </p>
                   </div>
 
                   <form onSubmit={handleGenerateCustomModule} className="space-y-6">
                     <div className="space-y-3">
-                      <label className="text-sm font-bold uppercase tracking-widest text-earth-400 ml-1">
+                      <label className="text-sm font-bold uppercase tracking-widest text-muted-foreground ml-1">
                         Describe the situation
                       </label>
                       <textarea 
                         value={situationTopic}
                         onChange={(e) => setSituationTopic(e.target.value)}
-                        className="w-full px-6 py-4 rounded-2xl bg-earth-800/50 border border-earth-700 text-white placeholder:text-earth-500 focus:outline-none focus:border-nature-500 transition-colors min-h-[120px] resize-none"
+                        className="w-full px-6 py-4 rounded-2xl bg-secondary border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors min-h-[120px] resize-none"
                         placeholder="e.g., 'Alex is terrified of an upcoming math test and says he is stupid.' or 'Sarah is dealing with exclusion from her friend group at school.'"
                         required
                         disabled={isGenerating}
@@ -703,7 +707,7 @@ export default function App() {
 
                     <Button 
                       type="submit" 
-                      className="w-full py-4 text-lg bg-nature-500 hover:bg-nature-400 text-earth-900 border-none shadow-[0_0_20px_rgba(90,90,64,0.4)]"
+                      className="w-full py-4 text-lg bg-primary hover:bg-primary/90 text-primary-foreground border-none shadow-lg"
                       disabled={isGenerating || !situationTopic.trim()}
                     >
                       {isGenerating ? (
@@ -733,55 +737,55 @@ export default function App() {
               className="space-y-8"
             >
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-nature-500/10 text-nature-700 rounded-full text-xs font-bold uppercase tracking-widest border border-nature-500/20">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold uppercase tracking-widest border border-primary/20">
                   <BarChart2 className="w-3 h-3" />
                   Premium Feature
                 </div>
-                <h2 className="text-4xl font-display">Growth Report</h2>
-                <p className="text-earth-600 serif text-lg italic">
+                <h2 className="text-4xl font-display text-foreground">Growth Report</h2>
+                <p className="text-muted-foreground serif text-lg italic">
                   Tracking {profile?.childName || 'your child'}'s emotional and personal development.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <Card className="flex flex-col items-center justify-center min-h-[300px]">
-                  <h3 className="text-xl font-display mb-6 self-start">Concept Mastery</h3>
+                  <h3 className="text-xl font-display mb-6 self-start text-foreground">Concept Mastery</h3>
                   {radarData.length > 0 ? (
                     <div className="w-full h-64">
                       <ResponsiveContainer width="100%" height="100%">
                         <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                          <PolarGrid stroke="#e8e2d6" />
-                          <PolarAngleAxis dataKey="concept" tick={{ fill: '#7c6756', fontSize: 12 }} />
+                          <PolarGrid stroke="hsl(var(--border))" />
+                          <PolarAngleAxis dataKey="concept" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} />
                           <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                          <Radar name="Mastery" dataKey="score" stroke="#5A5A40" fill="#5A5A40" fillOpacity={0.4} />
+                          <Radar name="Mastery" dataKey="score" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.4} />
                         </RadarChart>
                       </ResponsiveContainer>
                     </div>
                   ) : (
-                    <p className="text-earth-500 italic">Complete modules to see the mastery chart.</p>
+                    <p className="text-muted-foreground italic">Complete modules to see the mastery chart.</p>
                   )}
                 </Card>
 
                 <div className="space-y-6">
-                  <h3 className="text-2xl font-display">Recent Reflections</h3>
+                  <h3 className="text-2xl font-display text-foreground">Recent Reflections</h3>
                   {recentReflections.length > 0 ? (
                     <div className="space-y-4">
                       {recentReflections.slice(0, 3).map((ref, i) => (
                         <Card key={i} className="p-6 rounded-2xl">
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-bold text-earth-900">{ref.moduleTitle}</h4>
-                            <span className="text-xs text-earth-500">{new Date(ref.lastUpdated).toLocaleDateString()}</span>
+                            <h4 className="font-bold text-foreground">{ref.moduleTitle}</h4>
+                            <span className="text-xs text-muted-foreground">{new Date(ref.lastUpdated).toLocaleDateString()}</span>
                           </div>
-                          <span className="inline-block px-2 py-1 bg-earth-100 text-earth-600 rounded text-xs mb-3">
+                          <span className="inline-block px-2 py-1 bg-secondary text-secondary-foreground rounded text-xs mb-3">
                             {ref.keyConcept}
                           </span>
-                          <p className="text-earth-700 text-sm italic">"{ref.reflections}"</p>
+                          <p className="text-muted-foreground text-sm italic">"{ref.reflections}"</p>
                         </Card>
                       ))}
                     </div>
                   ) : (
-                    <Card className="p-6 rounded-2xl bg-earth-50 border-dashed">
-                      <p className="text-earth-500 italic text-center">No reflections yet. Complete a module to add your first note!</p>
+                    <Card className="p-6 rounded-2xl bg-secondary border-dashed">
+                      <p className="text-muted-foreground italic text-center">No reflections yet. Complete a module to add your first note!</p>
                     </Card>
                   )}
                 </div>
@@ -797,26 +801,26 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="max-w-2xl mx-auto space-y-8"
             >
-              <h2 className="text-4xl font-display text-center">Profile & Settings</h2>
+              <h2 className="text-4xl font-display text-center text-foreground">Profile & Settings</h2>
               
               <Card className="p-8">
-                <div className="flex items-center gap-4 mb-8 pb-8 border-b border-earth-200">
-                  <div className="w-16 h-16 bg-nature-100 rounded-full flex items-center justify-center text-nature-600">
+                <div className="flex items-center gap-4 mb-8 pb-8 border-b border-border">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary">
                     <UserIcon className="w-8 h-8" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-display">{profile?.childName || 'Child Profile'}</h3>
-                    <p className="text-earth-600">Age: {profile?.childAge || 'Not set'}</p>
+                    <h3 className="text-2xl font-display text-foreground">{profile?.childName || 'Child Profile'}</h3>
+                    <p className="text-muted-foreground">Age: {profile?.childAge || 'Not set'}</p>
                   </div>
                 </div>
 
                 {/* The Field Kit / Inventory */}
-                <div className="mb-8 pb-8 border-b border-earth-200">
-                  <h4 className="text-lg font-bold uppercase tracking-widest text-earth-900 mb-4 flex items-center gap-2">
-                    <Star className="w-5 h-5 text-nature-500" />
+                <div className="mb-8 pb-8 border-b border-border">
+                  <h4 className="text-lg font-bold uppercase tracking-widest text-foreground mb-4 flex items-center gap-2">
+                    <Star className="w-5 h-5 text-primary" />
                     {profile?.currentTrack === 'foundations' ? "The Inventory" : "The Field Kit"}
                   </h4>
-                  <p className="text-earth-600 text-sm mb-4 italic">
+                  <p className="text-muted-foreground text-sm mb-4 italic">
                     Artifacts collected from completed modules.
                   </p>
                   
@@ -826,17 +830,17 @@ export default function App() {
                         const ArtifactIcon = IconMap[module.artifactIcon || 'Star'] || Star;
                         return (
                           <div key={module.id} className="flex flex-col items-center gap-2 w-20">
-                            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-nature-400 to-nature-600 flex items-center justify-center text-white shadow-lg transform transition-transform hover:scale-110 hover:rotate-3 cursor-help" title={module.title}>
+                            <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary shadow-sm transform transition-transform hover:scale-110 hover:rotate-3 cursor-help" title={module.title}>
                               <ArtifactIcon className="w-8 h-8" />
                             </div>
-                            <span className="text-[10px] text-center font-bold text-earth-600 uppercase tracking-tighter leading-tight">
+                            <span className="text-[10px] text-center font-bold text-muted-foreground uppercase tracking-tighter leading-tight">
                               {module.keyConcept}
                             </span>
                           </div>
                         );
                       })
                     ) : (
-                      <div className="w-full p-6 border-2 border-dashed border-earth-300 rounded-2xl text-center text-earth-500 italic">
+                      <div className="w-full p-6 border-2 border-dashed border-border rounded-2xl text-center text-muted-foreground italic">
                         Your kit is empty. Start your journey to collect artifacts!
                       </div>
                     )}
@@ -845,8 +849,8 @@ export default function App() {
 
                 <div className="space-y-6">
                   <div className="text-center space-y-2">
-                    <h2 className="text-3xl font-display">Student Profile</h2>
-                    <p className="text-earth-500 serif italic">Customize the curriculum path.</p>
+                    <h2 className="text-3xl font-display text-foreground">Student Profile</h2>
+                    <p className="text-muted-foreground serif italic">Customize the curriculum path.</p>
                   </div>
 
                   <form className="space-y-6" onSubmit={async (e) => {
@@ -860,40 +864,40 @@ export default function App() {
                     const profileRef = doc(db, 'users', familyId);
                     await setDoc(profileRef, { childName, childAge, currentTrack }, { merge: true });
                     setProfile(prev => prev ? { ...prev, childName, childAge, currentTrack } : null);
-                    setView('map');
+                    setView('library');
                   }
                 }}>
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-earth-500 ml-1">Student's Name</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Student's Name</label>
                     <input 
                       name="childName"
                       defaultValue={profile?.childName}
-                      className="w-full px-6 py-4 rounded-2xl bg-earth-100 border border-earth-200 focus:outline-none focus:border-nature-500 transition-colors"
+                      className="w-full px-6 py-4 rounded-2xl bg-secondary border border-border focus:outline-none focus:border-primary transition-colors"
                       placeholder="e.g. Alex"
                       required
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-earth-500 ml-1">Student's Age</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Student's Age</label>
                     <input 
                       name="childAge"
                       type="number"
                       min="5"
                       max="16"
                       defaultValue={profile?.childAge}
-                      className="w-full px-6 py-4 rounded-2xl bg-earth-100 border border-earth-200 focus:outline-none focus:border-nature-500 transition-colors"
+                      className="w-full px-6 py-4 rounded-2xl bg-secondary border border-border focus:outline-none focus:border-primary transition-colors"
                       placeholder="5-16"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-earth-500 ml-1">Curriculum Track</label>
+                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Curriculum Track</label>
                     <select 
                       name="currentTrack"
                       defaultValue={profile?.currentTrack || 'foundations'}
-                      className="w-full px-6 py-4 rounded-2xl bg-earth-100 border border-earth-200 focus:outline-none focus:border-nature-500 transition-colors appearance-none"
+                      className="w-full px-6 py-4 rounded-2xl bg-secondary border border-border focus:outline-none focus:border-primary transition-colors appearance-none"
                     >
                       <option value="foundations">Foundations (Ages 5-10)</option>
                       <option value="expeditions">Expeditions (Ages 11-16)</option>
@@ -902,7 +906,7 @@ export default function App() {
 
                   <div className="pt-4 flex gap-3">
                     <Button type="submit" className="flex-1">Save Profile</Button>
-                    <Button variant="ghost" onClick={() => setView('map')}>Cancel</Button>
+                    <Button variant="ghost" onClick={() => setView('library')}>Cancel</Button>
                   </div>
                 </form>
 
@@ -910,28 +914,28 @@ export default function App() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="mt-12 pt-8 border-t border-earth-200 space-y-6"
+                  className="mt-12 pt-8 border-t border-border space-y-6"
                 >
                   <div className="text-center space-y-2">
-                    <h3 className="text-2xl font-display">Family Sync</h3>
-                    <p className="text-earth-500 serif italic text-sm">Link another parent or guardian to this profile.</p>
+                    <h3 className="text-2xl font-display text-foreground">Family Sync</h3>
+                    <p className="text-muted-foreground serif italic text-sm">Link another parent or guardian to this profile.</p>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <motion.div 
                       whileHover={{ scale: 1.02 }}
-                      className="bg-earth-50 p-6 rounded-2xl space-y-4"
+                      className="bg-secondary p-6 rounded-2xl space-y-4"
                     >
-                      <h4 className="font-bold text-earth-900">Share This Profile</h4>
-                      <p className="text-sm text-earth-600">Generate a code to let someone else sync with this student's progress.</p>
+                      <h4 className="font-bold text-foreground">Share This Profile</h4>
+                      <p className="text-sm text-muted-foreground">Generate a code to let someone else sync with this student's progress.</p>
                       {generatedCode ? (
                         <motion.div 
                           initial={{ scale: 0.9 }}
                           animate={{ scale: 1 }}
-                          className="bg-white p-4 rounded-xl text-center border border-nature-200"
+                          className="bg-card p-4 rounded-xl text-center border border-border"
                         >
-                          <span className="text-2xl font-mono font-bold tracking-widest text-nature-600">{generatedCode}</span>
-                          <p className="text-xs text-earth-500 mt-2 uppercase tracking-widest">Valid for 24 hours</p>
+                          <span className="text-2xl font-mono font-bold tracking-widest text-primary">{generatedCode}</span>
+                          <p className="text-xs text-muted-foreground mt-2 uppercase tracking-widest">Valid for 24 hours</p>
                         </motion.div>
                       ) : (
                         <Button variant="outline" onClick={handleGenerateSyncCode} className="w-full">
@@ -942,25 +946,25 @@ export default function App() {
 
                     <motion.div 
                       whileHover={{ scale: 1.02 }}
-                      className="bg-earth-50 p-6 rounded-2xl space-y-4"
+                      className="bg-secondary p-6 rounded-2xl space-y-4"
                     >
-                      <h4 className="font-bold text-earth-900">Join a Profile</h4>
+                      <h4 className="font-bold text-foreground">Join a Profile</h4>
                       {user && familyId && user.uid !== familyId ? (
                         <div className="space-y-4">
-                          <p className="text-sm text-earth-600">You are currently linked to another family's profile.</p>
-                          <Button variant="outline" onClick={handleUnlinkFamily} className="w-full text-red-500 border-red-200 hover:bg-red-50">
+                          <p className="text-sm text-muted-foreground">You are currently linked to another family's profile.</p>
+                          <Button variant="outline" onClick={handleUnlinkFamily} className="w-full text-destructive border-destructive/20 hover:bg-destructive/10">
                             Unlink Profile
                           </Button>
                         </div>
                       ) : (
                         <>
-                          <p className="text-sm text-earth-600">Enter a code provided by another parent to sync with their student.</p>
+                          <p className="text-sm text-muted-foreground">Enter a code provided by another parent to sync with their student.</p>
                           <form onSubmit={handleJoinFamily} className="space-y-3">
                             <input
                               value={syncCodeInput}
                               onChange={(e) => setSyncCodeInput(e.target.value.toUpperCase())}
                               placeholder="ENTER 6-DIGIT CODE"
-                              className="w-full px-4 py-3 rounded-xl bg-white border border-earth-200 focus:outline-none focus:border-nature-500 text-center font-mono font-bold tracking-widest uppercase"
+                              className="w-full px-4 py-3 rounded-xl bg-card border border-border focus:outline-none focus:border-primary text-center font-mono font-bold tracking-widest uppercase"
                               maxLength={6}
                             />
                             <Button type="submit" className="w-full" disabled={syncCodeInput.length < 6}>
@@ -970,7 +974,7 @@ export default function App() {
                               <motion.p 
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className={cn("text-sm text-center font-medium", syncMessage.type === 'error' ? "text-red-500" : "text-nature-600")}
+                                className={cn("text-sm text-center font-medium", syncMessage.type === 'error' ? "text-destructive" : "text-primary")}
                               >
                                 {syncMessage.text}
                               </motion.p>
@@ -990,12 +994,12 @@ export default function App() {
       </main>
 
       {/* Navigation Rail (Mobile) */}
-      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md border border-earth-200 rounded-full px-8 py-4 shadow-lg flex items-center gap-8 sm:gap-12 z-50">
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-background/90 backdrop-blur-md border border-border rounded-full px-8 py-4 shadow-lg flex items-center gap-8 sm:gap-12 z-50">
         <button 
-          onClick={() => setView('map')}
+          onClick={() => setView('library')}
           className={cn(
             "flex flex-col items-center gap-1 transition-colors",
-            view === 'map' ? "text-nature-500" : "text-earth-400 hover:text-earth-600"
+            view === 'library' ? "text-primary" : "text-muted-foreground hover:text-foreground"
           )}
         >
           <MapIcon className="w-6 h-6" />
@@ -1006,10 +1010,10 @@ export default function App() {
           onClick={() => setView('situation-room')}
           className={cn(
             "flex flex-col items-center gap-1 transition-colors relative",
-            view === 'situation-room' ? "text-nature-500" : "text-earth-400 hover:text-earth-600"
+            view === 'situation-room' ? "text-primary" : "text-muted-foreground hover:text-foreground"
           )}
         >
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-nature-500 rounded-full" />
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full" />
           <Sparkles className="w-6 h-6" />
           <span className="text-[10px] font-bold uppercase tracking-tighter">Custom</span>
         </button>
@@ -1018,10 +1022,10 @@ export default function App() {
           onClick={() => setView('analytics')}
           className={cn(
             "flex flex-col items-center gap-1 transition-colors relative",
-            view === 'analytics' ? "text-nature-500" : "text-earth-400 hover:text-earth-600"
+            view === 'analytics' ? "text-primary" : "text-muted-foreground hover:text-foreground"
           )}
         >
-          <div className="absolute -top-1 -right-1 w-2 h-2 bg-nature-500 rounded-full" />
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full" />
           <BarChart2 className="w-6 h-6" />
           <span className="text-[10px] font-bold uppercase tracking-tighter">Growth</span>
         </button>
@@ -1030,7 +1034,7 @@ export default function App() {
           onClick={() => setView('profile')}
           className={cn(
             "flex flex-col items-center gap-1 transition-colors",
-            view === 'profile' ? "text-nature-500" : "text-earth-400 hover:text-earth-600"
+            view === 'profile' ? "text-primary" : "text-muted-foreground hover:text-foreground"
           )}
         >
           <UserIcon className="w-6 h-6" />

@@ -1,15 +1,21 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-console.log("import.meta.env:", import.meta.env);
-const apiKey = process.env.GEMINI_API_KEY || import.meta.env.GEMINI_API_KEY;
-if (!apiKey) {
-  console.error("GEMINI_API_KEY is missing!");
-  throw new Error("Gemini API key is not configured. Please contact support.");
+let aiClient: GoogleGenAI | null = null;
+
+function getAiClient(): GoogleGenAI {
+  if (!aiClient) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY is not configured.");
+    }
+    aiClient = new GoogleGenAI({ apiKey });
+  }
+  return aiClient;
 }
-const ai = new GoogleGenAI({ apiKey });
 
 export async function generateModuleContent(topic: string, track: string, age: number) {
-  const model = ai.models.generateContent({
+  const ai = getAiClient();
+  const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: `Create a personal development lesson for a ${age}-year-old child in the ${track} track. The specific challenge or topic is: "${topic}".`,
     config: {
@@ -35,11 +41,11 @@ export async function generateModuleContent(topic: string, track: string, age: n
     }
   });
 
-  const response = await model;
   return JSON.parse(response.text || "{}");
 }
 
 export async function generateAudio(text: string) {
+  const ai = getAiClient();
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-preview-tts",
     contents: [{ parts: [{ text }] }],
