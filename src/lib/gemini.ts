@@ -1,7 +1,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-console.log("GEMINI_API_KEY:", process.env.GEMINI_API_KEY);
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+console.log("import.meta.env:", import.meta.env);
+const apiKey = process.env.GEMINI_API_KEY || import.meta.env.GEMINI_API_KEY;
+if (!apiKey) {
+  console.error("GEMINI_API_KEY is missing!");
+  throw new Error("Gemini API key is not configured. Please contact support.");
+}
+const ai = new GoogleGenAI({ apiKey });
 
 export async function generateModuleContent(topic: string, track: string, age: number) {
   const model = ai.models.generateContent({
