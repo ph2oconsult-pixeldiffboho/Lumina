@@ -349,7 +349,7 @@ export default function App() {
       setSituationTopic('');
     } catch (error) {
       console.error("Failed to generate module:", error);
-      alert("Failed to generate custom module. Please try again.");
+      alert(`Failed to generate custom module: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       setIsGenerating(false);
     }
