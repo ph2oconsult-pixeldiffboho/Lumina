@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isFamilyMember(userId) {
+      return isAuthenticated() && (
+        request.auth.uid == userId ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.linkedFamilyId == userId
+      );
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid is string &&
+             data.email is string;
+    }
+
+    function isValidProgress(data) {
+      return data.keys().hasAll(['userId', 'moduleId', 'status']) &&
+             data.status in ['in-progress', 'completed'];
+    }
+
+    // User Profiles
+    match /users/{userId} {
+      allow read: if isFamilyMember(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isFamilyMember(userId);
+    }
+
+    // Modules (Publicly readable by authenticated users)
+    match /modules/{moduleId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // Only admin (manual) can write modules for now
+    }
+
+    // Progress Tracking
+    match /users/{userId}/progress/{moduleId} {
+      allow read: if isFamilyMember(userId);
+      allow create, update: if isFamilyMember(userId) && isValidProgress(request.resource.data);
+      allow delete: if isFamilyMember(userId);
+    }
+
+    // Sync Codes for Family Sharing
+    match /syncCodes/{code} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isFamilyMember(request.resource.data.familyId);
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Parent and child profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "childName": { "type": "string" },
+        "childAge": { "type": "integer" },
+        "currentModuleId": { "type": "string" },
+        "completedModules": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["uid", "email"]
+    },
+    "Module": {
+      "title": "Module",
+      "description": "A learning module for personal development",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "ageRange": { "type": "string" },
+        "content": { "type": "string", "description": "Markdown content for the module story/lesson" }
+      },
+      "required": ["id", "title", "content"]
+    },
+    "Progress": {
+      "title": "Progress",
+      "description": "Tracking user progress through modules",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "moduleId": { "type": "string" },
+        "status": { "type": "string", "enum": ["in-progress", "completed"] },
+        "lastUpdated": { "type": "string", "format": "date-time" },
+        "reflections": { "type": "string" }
+      },
+      "required": ["userId", "moduleId", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/modules/{moduleId}": {
+      "schema": "Module",
+      "description": "Available learning modules"
+    },
+    "/users/{userId}/progress/{moduleId}": {
+      "schema": "Progress",
+      "description": "User progress per module"
+    }
+  }
+}

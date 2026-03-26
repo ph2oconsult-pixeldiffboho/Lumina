@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@100..900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", serif;
+  --font-display: "Libre Baskerville", serif;
+  --font-sans: "Inter", sans-serif;
+  
+  --color-earth-50: #fdfcfb;
+  --color-earth-100: #f5f2ed;
+  --color-earth-200: #e8e2d6;
+  --color-earth-300: #d1c5b4;
+  --color-earth-400: #b5a18d;
+  --color-earth-500: #9a836e;
+  --color-earth-600: #7c6756;
+  --color-earth-700: #5e4e42;
+  --color-earth-800: #42372f;
+  --color-earth-900: #2a231e;
+  
+  --color-nature-500: #5A5A40;
+}
+
+body {
+  @apply bg-earth-100 text-earth-900 font-sans antialiased;
+}
+
+.serif {
+  @apply font-serif;
+}
+
+.display {
+  @apply font-display;
+}
+
+.markdown-body h1 { @apply text-3xl font-display mb-4; }
+.markdown-body h2 { @apply text-2xl font-display mb-3 mt-6; }
+.markdown-body h3 { @apply text-xl font-display mb-2 mt-4; }
+.markdown-body p { @apply mb-4 leading-relaxed text-lg; }
+.markdown-body ul { @apply list-disc pl-6 mb-4; }
+.markdown-body li { @apply mb-2; }
+.markdown-body strong { @apply font-bold text-nature-500; }
+
