@@ -3,11 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// Force refresh
 import React, { useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, collection, onSnapshot, query } from 'firebase/firestore';
 import { auth, db, signIn, logOut } from './lib/firebase';
-import { INITIAL_MODULES } from './constants';
+import { INITIAL_MODULES } from './constants_v2';
 import { Module, UserProfile, Progress } from './types';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
